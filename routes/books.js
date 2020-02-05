@@ -27,7 +27,7 @@ router.get('/', asyncHandler(async (req, res) => {
 //   get /books/new - Shows the create new book form.
 
 router.get('/new', (req, res) => {
-  res.render("new-book", { author: {}, title: "New Book" });
+  res.render("new-book", { author: {}, title: "New Book" });//????***what is this object that is passed as a parameter doing?
 });
 
 //   post /books/new - Posts a new book to the database.
@@ -35,9 +35,9 @@ router.get('/new', (req, res) => {
   //create() method builds a new model instance and automatically stores it in the database(as a row)
   //create() is an asynchronous call that returns a promise
 router.post('/', asyncHandler(async (req, res) => {
-  console.log(req.body) //checking to make sure it returns: { title: '', author: '', body: '' } ---- (and obj w/ porps that map to the model attributes)
-  const article = await Book.create(req.body); //req.body is the body of your request NOT equivalent to the body property of an article object//create requires an obj with props that map to the model attributes (article.js - id, title, body)
-  res.redirect("/" + Book.id); //article.id concatenated on the end creates a unique url path for each query based on the id column
+  console.log("post books/new: ", req.body) //checking to make sure it returns: { title: '', author: '', body: '' } ---- (and obj w/ props that map to the model attributes)
+  const book = await Book.create(req.body); //req.body is the body of your request NOT equivalent to the body property of an article object//create requires an obj with props that map to the model attributes (article.js - id, title, body)
+  res.redirect("/" + book.id); //id concatenated on the end creates a unique url path for each query based on the id column
 }));
 
   
