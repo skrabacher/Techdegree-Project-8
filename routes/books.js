@@ -48,7 +48,7 @@ router.post('/new', asyncHandler(async (req, res) => {
 router.get("/:id", asyncHandler(async (req, res) => {
   const book = await Book.findByPk(req.params.id); //Book=book module, then find by using the number entered in the route as a parameter defined as id
   console.log("CONSOLE LOG: ", book); //just to see what the returned data looks like
-  res.render("book-detail", { book: book, title: book.title }); //book: book - the first book is the container for the local variable that is passed to pug, corresponds to article in "h2= article.title"
+  res.render("book-detail", { book: book, title: book.title, id: book.id }); //book: book - the first book is the container for the local variable that is passed to pug, corresponds to article in "h2= article.title"
   //render method defaults to views path as defined in the app.js file with app.set in the view engine setup [app.set('views', path.join(__dirname, 'views'));]
 }));
 
@@ -62,6 +62,15 @@ router.post("/:id", asyncHandler(async (req, res) => {
 }));
 
 //   post /books/:id/delete - Deletes a book. Careful, this can’t be undone. It can be helpful to create a new “test” book to test deleting.
+router.post('/:id/delete', asyncHandler(async (req ,res) => {
+  const book = await Book.findByPk(req.params.id);
+  if(book) {
+    await book.destroy();
+    res.redirect("/");
+  } else {
+    res.sendStatus(404);
+  }
+}));
   
   module.exports = router;
 
