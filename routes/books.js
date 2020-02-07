@@ -27,14 +27,14 @@ router.get('/', asyncHandler(async (req, res) => {
 //   get /books/new - Shows the create new book form.
 
 router.get('/new', (req, res) => {
-  res.render("new-book", { author: {}, title: "New Book" });//????***what is this object that is passed as a parameter doing?
+  res.render("new-book", { book: {}, title: "New Book" });//passes empty book object that will hold the new input values entered into the form
 });
 
 //   post /books/new - Posts a new book to the database.
 
   //create() method builds a new model instance and automatically stores it in the database(as a row)
   //create() is an asynchronous call that returns a promise
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/new', asyncHandler(async (req, res) => {
   console.log("post books/new: ", req.body) //checking to make sure it returns: { title: '', author: '', body: '' } ---- (and obj w/ props that map to the model attributes)
   const book = await Book.create(req.body); //req.body is the body of your request NOT equivalent to the body property of an article object//create requires an obj with props that map to the model attributes (article.js - id, title, body)
   res.redirect("/" + book.id); //id concatenated on the end creates a unique url path for each query based on the id column
@@ -43,7 +43,24 @@ router.post('/', asyncHandler(async (req, res) => {
   
 
 //   get /books/:id - Shows book detail form.
+
+/* GET individual book. */ //displays a book based on the id in the url path
+router.get("/:id", asyncHandler(async (req, res) => {
+  const book = await Book.findByPk(req.params.id); //Book=book module, then find by using the number entered in the route as a parameter defined as id
+  console.log("CONSOLE LOG: ", book); //just to see what the returned data looks like
+  res.render("book-detail", { book: book, title: book.title }); //book: book - the first book is the container for the local variable that is passed to pug, corresponds to article in "h2= article.title"
+  //render method defaults to views path as defined in the app.js file with app.set in the view engine setup [app.set('views', path.join(__dirname, 'views'));]
+}));
+
 //   post /books/:id - Updates book info in the database.
+
+router.post("/:id", asyncHandler(async (req, res) => {
+  console.log("post books/:id UPDATES: ", req.body);
+  const book = await Book.findByPk(req.params.id);
+  await book.update(req.body);
+  res.redirect("/books");
+}));
+
 //   post /books/:id/delete - Deletes a book. Careful, this can’t be undone. It can be helpful to create a new “test” book to test deleting.
   
   module.exports = router;

@@ -7,7 +7,7 @@ html
     link(rel="stylesheet" href="../stylesheets/style.css")
   body
     h1 New Book
-    form(action="/books", method="post")
+    form(action="/books/new", method="post")
       p
         label(for="title") Title
         input#title(name="title" type="text")
@@ -23,4 +23,4 @@ html
       p
         input(type="submit" value="Create New Book")
       p
-        a.button(href="/books/publish-new") Cancel
+        a.button(href="/books") Cancel
