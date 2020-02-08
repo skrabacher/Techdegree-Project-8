@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING, 
       allowNull: false, // disallow null requires a value for data to be submitted to db
       validate: {
-        notNull: {
+        notEmpty: {
             msg: 'Please provide a value for "title"',
         }
       },
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       type:  DataTypes.STRING,
       allowNull: false, // disallow null requires a value for data to be submitted to db
       validate: {
-        notNull: {
+        notEmpty: {
             msg: 'Please provide a value for "author"',
         }
       },
