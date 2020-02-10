@@ -9,6 +9,11 @@ block content
     body
       h1 Update Book
       form(action="/books/" + book.id, method="post")
+        if(error)
+          h2.error Oooops!
+          ul.error
+            li Author is required
+            li Name is required
         p
           label(for="title") Title
           input#title(name="title" type="text" value= title)
