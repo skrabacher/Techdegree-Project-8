@@ -37,7 +37,13 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+    if (err.status === 404) {
+      console.log("404 - App.js")
+      res.render("page-not-found");
+    } else {
+      console.log("other error - App.js")
+      res.render('error');
+    }
 });
 
 module.exports = app;

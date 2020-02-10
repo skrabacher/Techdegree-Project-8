@@ -9,8 +9,9 @@ function asyncHandler(cb){
       try {
         await cb(req, res, next)
       } catch(error){
-        next(error);//sends to app.js to handle
-        //res.status(500).send(error);
+        console.log("in asyncHandler CATCH");
+        //next(error);
+        res.status(500).send(error); //sends to app.js to handle
       }
     }
   }
@@ -39,7 +40,7 @@ router.post('/new', asyncHandler(async (req, res) => {
   let book;
   try {
     console.log("post books/new: ", req.body) //checking to make sure it returns: { title: '', author: '', body: '' } ---- (and obj w/ props that map to the model attributes)
-    const book = await Book.create(req.body); //req.body is the body of your request NOT equivalent to the body property of an book object//create requires an obj with props that map to the model attributes (book.js - title, author, genre, year)
+    book = await Book.create(req.body); //req.body is the body of your request NOT equivalent to the body property of an book object//create requires an obj with props that map to the model attributes (book.js - title, author, genre, year)
     //res.render("/form-error", { error });
     res.redirect("/books"); 
   } catch (error) {
@@ -67,7 +68,8 @@ router.get("/:id", asyncHandler(async (req, res) => {
     res.render("update-book", { book: book, title: book.title, id: book.id }); //book: book - the first book is the container for the local variable that is passed to pug
     //render method defaults to views path as defined in the app.js file with app.set in the view engine setup [app.set('views', path.join(__dirname, 'views'));]
   } else {
-    throw new Error("Entry Not Found");
+    res.sendStatus(404);
+    // throw new Error("Entry Not Found");
   }
 }));
 
