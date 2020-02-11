@@ -10,8 +10,8 @@ function asyncHandler(cb){
         await cb(req, res, next)
       } catch(error){
         console.log("in asyncHandler CATCH");
-        //next(error);
-        res.status(500).send(error); //sends to app.js to handle
+        next(error);
+        // res.status(500).send(error); //sends to app.js to handle
       }
     }
   }
@@ -50,7 +50,7 @@ router.post('/new', asyncHandler(async (req, res) => {
       console.log("validation error req.body: ", req.body);
       res.render("form-error", { error });
     } else {
-      throw error; //sends error to asynchandler 
+      throw error; //sends error to asynchandler
     }  
   }
   
@@ -68,8 +68,10 @@ router.get("/:id", asyncHandler(async (req, res) => {
     res.render("update-book", { book: book, title: book.title, id: book.id }); //book: book - the first book is the container for the local variable that is passed to pug
     //render method defaults to views path as defined in the app.js file with app.set in the view engine setup [app.set('views', path.join(__dirname, 'views'));]
   } else {
-    res.sendStatus(404);
-    // throw new Error("Entry Not Found");
+    // res.sendStatus(404);
+    //throw error;
+    let error = new Error("Entry Not Found");
+    res.render("error", { error, message: error.message });
   }
 }));
 
@@ -84,7 +86,9 @@ router.post("/:id", asyncHandler(async (req, res) => {
         await book.update(req.body);//update book info
         res.redirect("/books"); //redirect to the list of books (will show newly updated book info)
       } else { //if no book entry found
-        throw new Error("Entry Not Found");
+        //throw new Error("Entry Not Found");
+        let error = new Error("Entry Not Found");
+        res.render("error", { error, message: error.message });
       }
   } catch (error) { // if book entry exists but another error is thrown it will be caught here
     if(error.name === "SequelizeValidationError") {
@@ -92,7 +96,8 @@ router.post("/:id", asyncHandler(async (req, res) => {
       book.id = req.params.id;
       res.render("update-book", { book, error }); //passes the book and error info as local variables to the update book template
     } else {
-      throw new Error("validation not caught :(")
+      //throw new Error("validation not caught :(")
+      throw error;
     }
   }
 }));
@@ -104,7 +109,9 @@ router.post('/:id/delete', asyncHandler(async (req ,res) => {
     await book.destroy();
     res.redirect("/");
   } else {
-    res.sendStatus(404);
+    // res.sendStatus(404);
+    let error = new Error("Entry Not Found");
+    res.render("error", { error, message: error.message });
   }
 }));
   
