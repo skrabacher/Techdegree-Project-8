@@ -27,8 +27,3 @@ module.exports = (sequelize, DataTypes) => {
   };
   return Book;
 };
-
-//In the Book Model, add the appropriate validation to ensure 
-  //that the title and author properties will have values when 
-  //the form is submitted. See the project resources for a link 
-  //to the video that covers this.

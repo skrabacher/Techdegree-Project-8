@@ -11,7 +11,6 @@ function asyncHandler(cb){
       } catch(error){
         console.log("in asyncHandler CATCH");
         next(error);
-        // res.status(500).send(error); //sends to app.js to handle
       }
     }
   }
@@ -20,10 +19,8 @@ function asyncHandler(cb){
 //   get /books - Shows the full list of books.
 router.get('/', asyncHandler(async (req, res) => {
     const books = await Book.findAll({ order: [["year", "DESC"]] });//{ order: [["createdAt", "DESC"]] } orders the results by time the were created desc. aka most recent at the top
-    // const books = await Book.findByPk(1);
     console.log("books get request: ", books.id);
     res.render("index", { books: books });
-    //res.render("index", { title: books.title, author: books.author, genre: books.genre, year: books.year });
   }));
 
 //   get /books/new - Shows the create new book form.
@@ -41,7 +38,6 @@ router.post('/new', asyncHandler(async (req, res) => {
   try {
     console.log("post books/new: ", req.body) //checking to make sure it returns: { title: '', author: '', body: '' } ---- (and obj w/ props that map to the model attributes)
     book = await Book.create(req.body); //req.body is the body of your request NOT equivalent to the body property of an book object//create requires an obj with props that map to the model attributes (book.js - title, author, genre, year)
-    //res.render("/form-error", { error });
     res.redirect("/books"); 
   } catch (error) {
     console.log("error: ", error.name, error.status);
@@ -60,7 +56,7 @@ router.post('/new', asyncHandler(async (req, res) => {
 
 //   get /books/:id - Shows book detail form.
 
-/* GET individual book. */ //displays a book based on the id in the url path
+    //displays a book based on the id in the url path
 router.get("/:id", asyncHandler(async (req, res) => {
   const book = await Book.findByPk(req.params.id); //Book=book module, then find by using the number entered in the route as a parameter defined as id
   console.log("CONSOLE LOG: ", book); //just to see what the returned data looks like
@@ -68,8 +64,6 @@ router.get("/:id", asyncHandler(async (req, res) => {
     res.render("update-book", { book: book, title: book.title, id: book.id }); //book: book - the first book is the container for the local variable that is passed to pug
     //render method defaults to views path as defined in the app.js file with app.set in the view engine setup [app.set('views', path.join(__dirname, 'views'));]
   } else {
-    // res.sendStatus(404);
-    //throw error;
     let error = new Error("Entry Not Found");
     res.render("error", { error, message: error.message });
   }
@@ -80,13 +74,11 @@ router.get("/:id", asyncHandler(async (req, res) => {
 router.post("/:id", asyncHandler(async (req, res) => {
   let book;
   try {
-    // console.log("post books/:id UPDATES: ", req.body);
     book = await Book.findByPk(req.params.id);
       if(book) { //if book entry exists 
         await book.update(req.body);//update book info
         res.redirect("/books"); //redirect to the list of books (will show newly updated book info)
       } else { //if no book entry found
-        //throw new Error("Entry Not Found");
         let error = new Error("Entry Not Found");
         res.render("error", { error, message: error.message });
       }
@@ -96,7 +88,6 @@ router.post("/:id", asyncHandler(async (req, res) => {
       book.id = req.params.id;
       res.render("update-book", { book, error }); //passes the book and error info as local variables to the update book template
     } else {
-      //throw new Error("validation not caught :(")
       throw error;
     }
   }
@@ -109,7 +100,6 @@ router.post('/:id/delete', asyncHandler(async (req ,res) => {
     await book.destroy();
     res.redirect("/");
   } else {
-    // res.sendStatus(404);
     let error = new Error("Entry Not Found");
     res.render("error", { error, message: error.message });
   }
